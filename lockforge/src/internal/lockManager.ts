@@ -72,3 +72,25 @@ else if (result ===0){
 }
 
 }
+
+export async function checkLock(
+    redis:Redis,
+    resource:string
+): Promise<LockInfo | null > {
+
+    const key = "lock:" +resource;
+    const result =await redis.get(key)
+    if(result===null){
+       return  null;
+        
+    }
+    else if (result){
+        const ttl_remaining =await redis.pttl(key)
+        return {
+            resource,
+            owner:result,
+            ttl_remaining
+        }
+    }
+
+}
