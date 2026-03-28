@@ -1,0 +1,16 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  lockforge:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis:6379/3
+      - PORT=3000
+      - DEFAULT_TTL=30000
+    depends_on:
+      - redis
